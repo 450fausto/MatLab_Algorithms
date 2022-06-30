@@ -1,5 +1,5 @@
 function f=PowellQuadratic(x)
-% Powell’s Quadratic Problem (PWQ) n=4
+% Powellâ€™s Quadratic Problem (PWQ) n=4
 % LimInf=[-10 -10 -10 -10]; LimSup=[10 10 10 10];
 % Fojmin=0
 % x*=[0 0 0 0]
