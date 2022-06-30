@@ -1,7 +1,7 @@
 function y=GibbsFreeEnergy(k)
 % White, W. B., Johnson, S. M., & Dantzig, G. B. (1958). Chemical 
 % Equilibrium in Complex Mixtures. The Journal of Chemical Physics, 28(5), 
-% 751–755. doi:10.1063/1.1744264 
+% 751â€“755. doi:10.1063/1.1744264 
 % k=[0.0406681, 0.1477303, 0.7831534, 0.0014142, 0.4852466, 0.0006932, 0.0179473]
 % LimInf=0
 % LimSup=1
