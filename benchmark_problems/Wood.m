@@ -1,5 +1,5 @@
 function f=Wood(x)
-% Wood’s Function (WF) n=4
+% Woodâ€™s Function (WF) n=4
 % LimInf=[-10 -10 -10 -10]; LimSup=[10 10 10 10];
 % Fojmin=0
 % x*=[1 1 1 1]
