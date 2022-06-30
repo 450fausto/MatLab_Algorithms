@@ -1,5 +1,5 @@
 function y=CamelBack_3(x)
-% Camel Back – 3 Three Hump Problem (CB3) n=2
+% Camel Back â€“ 3 Three Hump Problem (CB3) n=2
 % The number of local minima is three
 % LimInf=[-5 -5]; LimSup=[5 5];
 % Fojmin= 0
