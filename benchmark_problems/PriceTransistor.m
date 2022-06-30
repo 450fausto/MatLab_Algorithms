@@ -1,5 +1,5 @@
 function f=PriceTransistor(x)
-% Price’s Transistor Modelling Problem (PTM) n=9
+% Priceâ€™s Transistor Modelling Problem (PTM) n=9
 % LimInf=[-10 -10 ... -10]; LimSup=[10 10 ... 10];
 % Fojmin=0
 % x*=[0.9 0.45 1 2 8 8 5 1 2]
