@@ -1,4 +1,4 @@
-function [Solution,Convergencia]=DEPrice(CostFunction,LimInf,LimSup,NumPop,MaxIter)
+function [Solution,Convergence]=DEPrice(CostFunction,LimInf,LimSup,NumPop,MaxIter)
 %Storn R. and Price K. (1997). Differential evolution: A simple and 
 %efficient heuristic for global optimization over continuous spaces. 
 %Journal of Global Optimization 11, 341–359.
