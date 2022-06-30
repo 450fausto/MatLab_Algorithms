@@ -1,5 +1,5 @@
 function f=ShekelFoxholes(x)
-% Shekel’s Foxholes (FX) n=5, 10
+% Shekelâ€™s Foxholes (FX) n=5, 10
 % LimInf=[0 0 ... 0]; LimSup=[10 10 ... 10];
 % Fojmin~=-10.4056 and -10.2088 
 % x*=[8.025,9.152,5.114,7.621,4.564] 
