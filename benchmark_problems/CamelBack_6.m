@@ -1,5 +1,5 @@
 function y=CamelBack_6(x)
-% Camel Back – 6 Six Hump Problem (CB6) n=2
+% Camel Back â€“ 6 Six Hump Problem (CB6) n=2
 % The number of local minima is two
 % LimInf=[-5 -5]; LimSup=[5 5];
 % Fojmin?-1.0316... 
