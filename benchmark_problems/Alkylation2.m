@@ -1,8 +1,8 @@
 function y=Alkylation2(x)
 % Adjiman, C. S., Dallwig, S., Floudas, C. A., & Neumaier, A. (1998). 
 % A global optimization method, ?BB, for general twice-differentiable 
-% constrained NLPs — I. Theoretical advances. Computers & Chemical 
-% Engineering, 22(9), 1137–1158. doi:10.1016/s0098-1354(98)00027-1 
+% constrained NLPs â€” I. Theoretical advances. Computers & Chemical 
+% Engineering, 22(9), 1137â€“1158. doi:10.1016/s0098-1354(98)00027-1 
 % LimInf =[1500, 1, 3000, 85, 90, 3, 145]
 % LimSup = [2000, 120, 3500, 93, 95, 12, 162]
 C(1)=0.0059553571*x(1)*x(6)^2+0.88392857*x(3)-0.1175625*x(1)*x(6)-x(1);
