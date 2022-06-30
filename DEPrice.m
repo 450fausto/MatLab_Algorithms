@@ -1,34 +1,34 @@
 function [Solution,Convergencia]=DEPrice(CostFunction,LimInf,LimSup,NumPop,MaxIter)
 %Storn R. and Price K. (1997). Differential evolution: A simple and 
 %efficient heuristic for global optimization over continuous spaces. 
-%Journal of Global Optimization 11, 341–359.
-%% Antes de empezar
+%Journal of Global Optimization 11, 341â€“359.
+%% At first...
 if size(LimInf)~=size(LimSup)
-    error('LimInf y LimSup deben tener el mismo tamaño')
+    error('LimInf and LimSup must be the same size')
 end
 if size(LimSup,1)>1
-    error('Tanto LimInf como LimSup deben ser un vector fila')
+    error('Both LimInf and LimSup must be a row vector')
 end
 if MaxIter<=0
-    error('MaxIter debe ser mayor a cero')
+    error('MaxIter must be greater than zero')
 end
-%% Valores iniciales
+%% Control parameters
 NumVar=length(LimSup);
 F=0.5;
 Cr=0.2;
-%% Matrices vacías
+%% Empty matrices
 Fit=NaN(NumPop,1);
-Convergencia=zeros(MaxIter,1);
-%% poblaciones
+Convergence=zeros(MaxIter,1);
+%% Poblation
 X=repmat(LimInf,NumPop,1)+(repmat(LimSup,NumPop,1)-repmat(LimInf,NumPop,1)).*rand(NumPop,NumVar);
 for i=1:NumPop
     Fit(i)=CostFunction(X(i,:));
 end
 [Fbest,b]=min(Fit);
-Convergencia(1)=Fbest;
+Convergence(1)=Fbest;
 iter=1;
 Xbest=X(b,:);
-%% Proceso iterativo
+%% Iterations
 while iter<MaxIter
     for i=1:NumPop
         A=randperm(NumPop);
@@ -56,7 +56,7 @@ while iter<MaxIter
         end
     end
     iter=iter+1;
-    Convergencia(iter)=Fbest;
+    Convergence(iter)=Fbest;
 end
 Solution=[Xbest,Fbest];
 end
