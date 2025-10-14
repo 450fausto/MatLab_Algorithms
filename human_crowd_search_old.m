@@ -1,38 +1,38 @@
 function [solucion, convergencia] = human_crowd_search(funcion_costo, limites_inferiores, limites_superiores, tamanio_poblacion, maximo_iteraciones)
 % BUSQUEDA_GRUPAL - Human Crowd Search (HCS)
-% B˙squeda inspirada en grupos humanos:
+% B√∫squeda inspirada en grupos humanos:
 % - Red social ligera (anillo + atajos)
 % - Consejos entre pares (direcciones compartidas)
-% - Confianza/reputaciÛn que se actualiza por refuerzo
-% - Reuniones periÛdicas ("stand-ups") con lÌder y disenso controlado
+% - Confianza/reputaci√≥n que se actualiza por refuerzo
+% - Reuniones peri√≥dicas ("stand-ups") con l√≠der y disenso controlado
 % - Satisficing: cambio de mentor cuando no hay progreso
-% - AdaptaciÛn de paso por individuo y reflexiÛn en lÌmites
+% - Adaptaci√≥n de paso por individuo y reflexi√≥n en l√≠mites
 %
-% Entradas: como tu versiÛn original.
+% Entradas: como tu versi√≥n original.
 % Salidas:
 %   solucion      : [1 x (d+1)] = [mejor_x, mejor_costo]
-%   convergencia  : [maximo_iteraciones x 1] costo mÌnimo global por iter
+%   convergencia  : [maximo_iteraciones x 1] costo m√≠nimo global por iter
 
-%% ---------- Par·metros de control ----------
-probabilidad_atajo = 0.1;                   % prob. de aÒadir un atajo por nodo
-fraccion_seguidores = 0.5;           % fracciÛn que sigue al lÌder en stand-up
-fraccion_detractores   = 0.2;           % fracciÛn que prueba rumbo opuesto
-pasos_reunion = 7;                    % cada cu·ntas iteraciones hay "reuniÛn"
+%% ---------- Par√°metros de control ----------
+probabilidad_atajo = 0.1;                   % prob. de a√±adir un atajo por nodo
+fraccion_seguidores = 0.5;           % fracci√≥n que sigue al l√≠der en stand-up
+fraccion_detractores   = 0.2;           % fracci√≥n que prueba rumbo opuesto
+pasos_reunion = 7;                    % cada cu√°ntas iteraciones hay "reuni√≥n"
 temperatura_social = 0.7;                % temperatura para softmax de consejos
 tasa_confianza = 0.15;                 % tasa de aprendizaje de confianza
 tolerancia_mentor = 8;            % si no mejora en estas rondas, cambia mentor
-sesgo_al_mejor = 0.4;             % 40% sesgo al mejor global, 60% exploraciÛn propia
-historial = 10;                   % ˙ltimas decisiones que se toman en cuenta para la reputaciÛn
+sesgo_al_mejor = 0.4;             % 40% sesgo al mejor global, 60% exploraci√≥n propia
+historial = 10;                   % √∫ltimas decisiones que se toman en cuenta para la reputaci√≥n
 
 % Nota: seguidores + detractores + independientes
 
-%% ---------- InicializaciÛn (no mover) ----------
+%% ---------- Inicializaci√≥n (no mover) ----------
 numero_variables = numel(limites_superiores); 
 numero_vecinos = max(2, min(6, floor(numero_variables/3)));   % vecinos por lado en el anillo
 rango = limites_superiores - limites_inferiores;
-reputacion = 0.5*ones(tamanio_poblacion,historial); % ReputaciÛn individual (Èxito reciente; EMA de tasa de aciertos)
+reputacion = 0.5*ones(tamanio_poblacion,historial); % Reputaci√≥n individual (√©xito reciente; EMA de tasa de aciertos)
 no_mejora = zeros(tamanio_poblacion,1); % Contadores de no-mejora
-mentor = zeros(tamanio_poblacion,1); % Mentor preferido por cada individuo (arranca sin mentor: 0 => sÌguete a ti)
+mentor = zeros(tamanio_poblacion,1); % Mentor preferido por cada individuo (arranca sin mentor: 0 => s√≠guete a ti)
 sigma0 = rango / 20;
 % sigma_min = 1e-12;
 % sigma_max = 5 * max(sigma0);
@@ -42,7 +42,7 @@ mentor_elegido = false(tamanio_poblacion,1);
 mejorado = false(tamanio_poblacion,1);
 ponderacion = (1:historial)/sum(1:historial);
 
-%% ---------- PoblaciÛn inicial ----------
+%% ---------- Poblaci√≥n inicial ----------
 poblacion = repmat(limites_inferiores, tamanio_poblacion, 1) ...
     + rand(tamanio_poblacion,numero_variables).*repmat(rango, tamanio_poblacion, 1);
 sigma = repmat(sigma0, tamanio_poblacion, 1);                  % paso por componente
@@ -69,7 +69,7 @@ for individuo=1:tamanio_poblacion
     vecinos{individuo} = unique(idx);
 end
 
-% Confianza w(i,j) sÛlo donde hay arista i->j (guardamos como cell sparse)
+% Confianza w(i,j) s√≥lo donde hay arista i->j (guardamos como cell sparse)
 confianza = cell(tamanio_poblacion,1);
 for individuo=1:tamanio_poblacion
     m = numel(vecinos{individuo});
@@ -80,8 +80,8 @@ end
 %% ---------- Proceso iterativo ----------
 for iter = 1:maximo_iteraciones
 
-    % ---- Fase 1: todos proponen una direcciÛn ----
-    % Combina: (a) direcciÛn propia aleatoria; (b) sesgo hacia (best_x - X(i,:))
+    % ---- Fase 1: todos proponen una direcci√≥n ----
+    % Combina: (a) direcci√≥n propia aleatoria; (b) sesgo hacia (best_x - X(i,:))
     direcciones = zeros(tamanio_poblacion,numero_variables);
     for individuo=1:tamanio_poblacion
         vector_unitario = randn(1,numero_variables); 
@@ -97,23 +97,23 @@ for iter = 1:maximo_iteraciones
         direcciones(individuo,:) = direccion_propuesta / norm(direccion_propuesta);
     end
 
-    % ---- Fase 2: cada persona elige a quiÈn seguir (softmax por confianza*reputaciÛn) ----
+    % ---- Fase 2: cada persona elige a qui√©n seguir (softmax por confianza*reputaci√≥n) ----
     for individuo=1:tamanio_poblacion
         idx = confianza{individuo}.idx; 
         vector_confianza = confianza{individuo}.w; % w suma ~1
-        reput = sum(reputacion(idx,:).*repmat(ponderacion,length(idx),1),2)';           % reputaciÛn de vecinos
+        reput = sum(reputacion(idx,:).*repmat(ponderacion,length(idx),1),2)';           % reputaci√≥n de vecinos
         score = vector_confianza .* reput; 
-        % incluye la opciÛn ìme sigo a mÌî como otro "vecino" artificial
+        % incluye la opci√≥n ‚Äúme sigo a m√≠‚Äù como otro "vecino" artificial
         score_self = sum(reputacion(individuo,:) .* ponderacion); 
-        idx_aug = [idx, tamanio_poblacion+individuo];   % n+i representar· "self"
+        idx_aug = [idx, tamanio_poblacion+individuo];   % n+i representar√° "self"
         score_aug = [score, score_self];
         % softmax con temperatura
         p = exp(score_aug / max(1e-12, temperatura_social));
         p = p / sum(p);
-        % si tengo mentor fijado y confÌo en Èl, aumento su probabilidad
+        % si tengo mentor fijado y conf√≠o en √©l, aumento su probabilidad
         if mentor(individuo)>0
             k = find(idx_aug==mentor(individuo), 1);
-            % Reajustar esta parte, est· horrible
+            % Reajustar esta parte, est√° horrible
             if ~isempty(k)
                 p = p * 0.9; 
                 p(k) = p(k) + 0.1; 
@@ -134,7 +134,7 @@ for iter = 1:maximo_iteraciones
         end
     end
 
-    % ---- Fase 3: Stand-up (cada m_standup): lÌder propone y hay seguidores/retractores ----
+    % ---- Fase 3: Stand-up (cada m_standup): l√≠der propone y hay seguidores/retractores ----
     if mod(iter, pasos_reunion) == 0
         [~, ibest] = min(costo); 
         lider = ibest;
@@ -164,7 +164,7 @@ for iter = 1:maximo_iteraciones
         end
     end
 
-    % ---- Fase 4: Moverse, evaluar y actualizar confianza/ reputaciÛn/ pasos ----
+    % ---- Fase 4: Moverse, evaluar y actualizar confianza/ reputaci√≥n/ pasos ----
     nueva_poblacion = poblacion; 
     nuevo_costo = costo;
 
@@ -173,7 +173,7 @@ for iter = 1:maximo_iteraciones
         candidato = reflect_box(poblacion(individuo,:) + paso, limites_inferiores, limites_superiores);
         costo_candidato = funcion_costo(candidato);
 
-        if costo_candidato < costo(individuo)   % Èxito
+        if costo_candidato < costo(individuo)   % √©xito
             nueva_poblacion(individuo,:) = candidato; 
             nuevo_costo(individuo) = costo_candidato; 
             mejorado(individuo) = true;
@@ -188,19 +188,19 @@ for iter = 1:maximo_iteraciones
             mejorado(individuo) = false;
         end
 
-        % reputaciÛn individual (EMA de Èxitos 0/1)
+        % reputaci√≥n individual (EMA de √©xitos 0/1)
 %         reputacion(individuo) = 0.9*reputacion(individuo) + 0.1*double(mejorado(individuo));
         reputacion(individuo,:) = [reputacion(individuo,2:end),double(mejorado(individuo))];
 
-        % refuerzo de confianza si seguÌ a un mentor real
+        % refuerzo de confianza si segu√≠ a un mentor real
         if mentor_elegido(individuo)
             idx = confianza{individuo}.idx; 
             vector_confianza = confianza{individuo}.w;
             idx_mentor = find(idx==mentor(individuo), 1);
             if ~isempty(idx_mentor)
-                recompensa = (costo_candidato < costo(individuo)); % recompensa 1 si mejorÛ
+                recompensa = (costo_candidato < costo(individuo)); % recompensa 1 si mejor√≥
                 vector_confianza(idx_mentor) = (1-tasa_confianza)*vector_confianza(idx_mentor) + tasa_confianza*double(recompensa);
-                % renormaliza (mantÈn pequeÒa masa a los no-pos)
+                % renormaliza (mant√©n peque√±a masa a los no-pos)
                 vector_confianza = max(vector_confianza, 1e-6); 
                 vector_confianza = vector_confianza / sum(vector_confianza);
                 confianza{individuo}.w = vector_confianza;
@@ -209,16 +209,16 @@ for iter = 1:maximo_iteraciones
 
         % si llevo mucho sin mejorar cambio de mentor (re-cableo ligero)
         if no_mejora(individuo) >= tolerancia_mentor
-            % suelta al mentor actual y aÒade un atajo aleatorio
+            % suelta al mentor actual y a√±ade un atajo aleatorio
             mentor(individuo) = 0;
             mentor_candidato = randi(tamanio_poblacion);
             if ~ismember(mentor_candidato, vecinos{individuo}) && mentor_candidato ~= individuo
                 vecinos{individuo} = unique([vecinos{individuo}, mentor_candidato]);
-                % aÒade nueva entrada de confianza con peso pequeÒo
+                % a√±ade nueva entrada de confianza con peso peque√±o
                 confianza{individuo}.idx = vecinos{individuo};
                 cantidad_vecinos = numel(vecinos{individuo});
                 % rehacer el vector w manteniendo proporciones
-                vector_confianza_anterior = confianza{individuo}.w; % podrÌa tener otra longitud
+                vector_confianza_anterior = confianza{individuo}.w; % podr√≠a tener otra longitud
                 if numel(vector_confianza_anterior) < cantidad_vecinos
                     vector_confianza = [0.98*vector_confianza_anterior, 0.02];
                 else
@@ -254,10 +254,10 @@ end
 % reputacion
 solucion = [mejor_x, mejor_costo];
 
-end % ==== funciÛn principal ====
+end % ==== funci√≥n principal ====
 
 
-% ---------- Utilidad: reflexiÛn en caja ----------
+% ---------- Utilidad: reflexi√≥n en caja ----------
 function x = reflect_box(x, lo, hi)
 below = x < lo; 
 if any(below)
